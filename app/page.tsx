@@ -161,7 +161,6 @@ export default function Home() {
           <li>Navigate to the project directory: <code className="bg-gray-800 px-2 py-1 rounded">cd slow-roads</code></li>
           <li>Install dependencies: <code className="bg-gray-800 px-2 py-1 rounded">npm install</code></li>
           <li>Start the development server: <code className="bg-gray-800 px-2 py-1 rounded">npm run dev</code></li>
-          <li>Open your browser and visit: <code className="bg-gray-800 px-2 py-1 rounded">http://localhost:3000</code></li>
         </ol>
       </div>
     </div>
