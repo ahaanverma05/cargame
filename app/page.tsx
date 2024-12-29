@@ -1,101 +1,170 @@
-import Image from "next/image";
+"use client"
+
+import React, { useState, useRef, useEffect } from 'react'
+import { Spotlight } from "./components/spotlight"
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { cn } from "@/app/lib/utils"
+import packageLock from '../package-lock.json'
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [isAboutOpen, setIsAboutOpen] = useState(false)
+  const [showSpotlights, setShowSpotlights] = useState(false)
+  const [showFullContent, setShowFullContent] = useState(false)
+  const aboutRef = useRef<HTMLDivElement>(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(() => {
+    const spotlightTimer = setTimeout(() => {
+      setShowSpotlights(true)
+    }, 1000)
+
+    const contentTimer = setTimeout(() => {
+      setShowFullContent(true)
+    }, 2000)
+
+    return () => {
+      clearTimeout(spotlightTimer)
+      clearTimeout(contentTimer)
+    }
+  }, [])
+
+  const toggleAbout = () => {
+    setIsAboutOpen(!isAboutOpen)
+    if (aboutRef.current) {
+      aboutRef.current.style.transform = isAboutOpen ? 'translateY(100%)' : 'translateY(0)'
+    }
+  }
+
+  return (
+    <div className="relative min-h-screen bg-[#121216] text-white flex flex-col overflow-hidden">
+      <AnimatePresence>
+        {showSpotlights && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+            >
+              <Spotlight
+                className="fixed -top-40 left-0 md:left-60 md:-top-20 opacity-100"
+                fill="white"
+              />
+              
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, delay: 0.5 }}
+            >
+              <Spotlight
+                className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                fill="white"
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      
+      <main className={cn(
+        "flex-1 flex flex-col items-center justify-center px-4 z-10 transition-opacity duration-300",
+        isAboutOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+      )}>
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center"
+        >
+         <div className="w-64 h-64 mb-5">
+            <img 
+              src="/images/logo.png" 
+              alt="Logo" 
+              className="w-full h-full object-contain"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-light tracking-wider mb-2 text-center">
+  slow roads
+</h1>
+
+<p className="text-gray-400 text-sm tracking-widest mb-12 text-center">
+  endless driving zen
+</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showFullContent ? 1 : 0 }}
+          transition={{ duration: 1 }}
+        >
+          <button className="w-[280px] h-[60px] bg-[rgba(45,45,45,0.9)] text-white text-lg font-light tracking-[0.2em] rounded-sm">
+            begin
+          </button>
+        </motion.div>
+      </main>
+      
+      <motion.footer 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showFullContent ? 1 : 0 }}
+        transition={{ duration: 1 }}
+        className={cn(
+          "py-6 px-4 flex justify-between items-end z-10 transition-opacity duration-300",
+          isAboutOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+        )}
+      >
+        <div className="text-xs text-gray-500">
+          <a 
+            href="https://shauryabahl.vercel.app/" 
+            target="_blank" 
             rel="noopener noreferrer"
+            className="hover:text-gray-400 transition-colors"
           >
-            Read our docs
+            From Shaurya and Ahaan © 2024
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        
+        <div className="flex gap-8 absolute left-1/2 bottom-6 transform -translate-x-1/2">
+          <a href="#" className="text-xl hover:text-gray-300 transition-colors">donate</a>
+          <button onClick={toggleAbout} className="text-xl hover:text-gray-300 transition-colors flex flex-col items-center">
+            about
+            <ChevronDown className="w-6 h-6 animate-bounce" />
+          </button>
+        </div>
+        
+        <div className="text-xs text-gray-500">
+          <span>v{packageLock.version}</span>
+        </div>
+      </motion.footer>
+
+      <div 
+        ref={aboutRef}
+        className={cn(
+          "fixed inset-x-0 bottom-0 bg-black/90 text-white p-8 transition-transform duration-300 ease-in-out transform translate-y-full",
+          isAboutOpen && "translate-y-0"
+        )}
+      >
+        <button 
+          onClick={toggleAbout}
+          className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <ChevronUp className="w-6 h-6" />
+          <span className="sr-only">Back</span>
+        </button>
+        <h2 className="text-2xl font-bold mb-4">About Slow Roads</h2>
+        <p className="mb-4">
+          Slow Roads is an endless driving zen experience created by Shaurya and Ahaan.
+          Immerse yourself in a relaxing journey through procedurally generated landscapes.
+        </p>
+        <h3 className="text-xl font-semibold mb-2">How to Install</h3>
+        <ol className="list-decimal list-inside space-y-2">
+          <li>Clone the repository: <code className="bg-gray-800 px-2 py-1 rounded">git clone https://github.com/shaurya-ahaan/slow-roads.git</code></li>
+          <li>Navigate to the project directory: <code className="bg-gray-800 px-2 py-1 rounded">cd slow-roads</code></li>
+          <li>Install dependencies: <code className="bg-gray-800 px-2 py-1 rounded">npm install</code></li>
+          <li>Start the development server: <code className="bg-gray-800 px-2 py-1 rounded">npm run dev</code></li>
+          <li>Open your browser and visit: <code className="bg-gray-800 px-2 py-1 rounded">http://localhost:3000</code></li>
+        </ol>
+      </div>
     </div>
-  );
+  )
 }
+
